@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Entry {
+  id            String   @id @default(cuid())
+  type          String   // "sentence" | "dialogue"
+  textSheng     String?  @db.Text
+  textStandard  String?  @db.Text
+  turns         Json?    // [{ speaker: String, text: String }, ...] when type = "dialogue"
+  sourceType    String
+  sourceName    String?
+  region        String
+  topic         String
+  notes         String?  @db.Text
+  wordCount     Int
+  qualityFlag   String   @default("haijakaguliwa") // "haijakaguliwa" | "nzuri" | "ina_shaka"
+  deleted       Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([deleted])
+  @@index([qualityFlag])
+}
+
+model Settings {
+  id         Int       @id @default(1)
+  startDate  DateTime  @default(now())
+  targetDate DateTime?
+  goalWords  Int       @default(1000000)
+}
