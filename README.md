@@ -1,39 +1,73 @@
-# Kiswahili cha Mtaani — Dataset Project
+# Kiswahili cha Mtaani Dataset App
 
-Mradi wa kukusanya dataset ya Kiswahili cha mtaani (sheng/lugha ya kila siku)
-kwa ajili ya kutrain/fine-tune AI models za Kiswahili cha kweli — si Kiswahili
-cha kamusi.
+Mradi huu ni mfumo wa kukusanya, kusafisha na kuhifadhi dataset ya Kiswahili cha mtaani (sheng, lugha ya kila siku) kwa ajili ya mafunzo ya AI na LLMs. Unachangia data kwa mkono, kwa scraping, au kwa kuleta CSV, na unaweza kuifanyia review kwenye admin dashboard.
 
-Lengo: **maneno 1,000,000+** ndani ya mwaka mmoja, yakikusanywa kwa mkono na
-kwa scraping, kisha kusafishwa na kuandaliwa kwa fine-tuning.
+## Lengo kuu
 
-## Muundo wa mradi
+- Kukusanya data ya Kiswahili cha ulimwengu halisi
+- Kuandaa dataset bora kwa ajili ya fine-tuning na mafunzo ya mifano ya lugha
+- Kuweka data kwenye database yenye utaratibu wa wazi na wa kudumu
 
+## Vipengele muhimu
+
+- Kuingiza sentensi moja au mazungumzo ya zamu-zamu
+- Kuweka metadata kama chanzo, mkoa, mada, na notes
+- Quality flag: haijakaguliwa, nzuri, au ina shaka
+- Admin dashboard kwa kuhariri, kufuta, na kuangalia duplicate entries
+- Import na export ya CSV na JSONL
+- Progress tracker inayofuata lengo la maneno lililowekwa
+
+## Muundo wa repo
+
+- app/ — Next.js app, API routes, Prisma schema, na admin dashboard
+- scraper/ — Python scripts za scraping
+- notebook/ — notebook ya data prep na EDA
+- AGENTS.md — maelekezo ya kina kwa AI coding agent
+
+## Setup ya ndani
+
+### Mahitaji
+
+- Node.js 18+
+- PostgreSQL (au Docker)
+
+### Hatua
+
+```bash
+cd app
+npm install
 ```
-kiswahili-mtaani/
-  app/          Web app (Next.js + PostgreSQL) — kuongeza data + Admin Dashboard
-                Hii ndiyo "chanzo halisi" cha data (database iko hapa)
-  scraper/      Script za Python — scraping kutoka Jamii Forums na mitandao
-                ya kijamii, kutoa CSV inayopakiwa kwenye app/
-  notebook/     Colab notebook — EDA, usafi wa data, kuandaa kwa fine-tuning
-  AGENTS.md     Maelekezo ya kina kwa AI coding agent (Kiingereza — angalia hapo)
+
+Unda faili la `.env` na uweke variables hizi:
+
+```env
+DATABASE_URL=postgresql://user:password@localhost:5432/kiswahili_mtaani
+APP_PASSWORD=your-secret-password
+SESSION_SECRET=your-random-secret
+GOAL_WORDS=1000000
 ```
 
-## Ukitaka kufanya kazi na hii wewe mwenyewe
-Fungua README.md ndani ya folder unayotaka kufanyia kazi:
-- `app/README.md` — setup ya local + jinsi ya deploy Railway
-- `scraper/README.md` — setup ya scraper + mambo ya kuzingatia (ToS, faragha)
-- `notebook/` — fungua `.ipynb` kwenye Google Colab
+Kisha endesha:
 
-## Ukitaka kumtumia AI coding agent (Claude Code, n.k.) kufanya kazi humu
-Mpe `AGENTS.md` kwanza — hiyo ndiyo faili inayoelezea mradi mzima, jinsi
-components tatu zinavyounganika, wapi kubadilisha kitu gani, na vitu vya
-kuzingatia kabla ya kubadilisha msingi wa mfumo. Agents wengi wa kisasa
-wanasoma `AGENTS.md` kiotomatiki wakigundua ipo kwenye repo.
+```bash
+npx prisma migrate deploy
+npm run dev
+```
 
-## Muhtasari wa mtiririko (workflow)
-1. **Kuongeza data kwa mkono** — `app/` homepage, form ya sentensi/mazungumzo
-2. **Kuongeza data kwa scraping** — `scraper/` → CSV → `app/admin` "Pakia CSV"
-   → kagua na weka quality flag
-3. **Kuandaa kwa fine-tuning** — `notebook/` inavuta train/val/test kutoka
-   `app/`, inasafisha, inaandaa data tayari
+Fungua http://localhost:3000
+
+## Deployment
+
+Repo hii imeandaliwa kwa deploy kwenye Railway. Unganisha PostgreSQL, weka environment variables, kisha udeploy app yako.
+
+## Usalama
+
+- Weka thamani nyeti kama `APP_PASSWORD` na `SESSION_SECRET` kwenye environment variables
+- Usiruhusu password ya default katika production
+- Kwa data ya watu halisi, epuka kuweka majina halisi au taarifa zinazoweza kuwatambulisha watu
+
+## Hatua zijazo
+
+- Dashboard ya takwimu zaidi
+- Roles za watumiaji wengi
+- Uboreshaji wa preprocessing na export kwa fine-tuning
